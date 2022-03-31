@@ -1,6 +1,9 @@
 #  Model PNG
 model.png
 
+# Keras Tuner
+untitled_project/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
