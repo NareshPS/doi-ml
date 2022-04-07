@@ -1,6 +1,6 @@
 'plot_history', (0, 548)
 'model_summary', (1024, 2405)
-'run_summary', (3584, 648)
+'run_summary', (6656, 1526)
 'tf_imports', (4608, 848)
 'basic_image_augmentations', (5632, 108)
 'image_randaugment', (6144, 311)
