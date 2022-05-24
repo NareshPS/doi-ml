@@ -6,3 +6,5 @@
 'image_randaugment', (6144, 311)
 'run_summary_multioutput', (8192, 1526)
 'show_dataset_samples', (9728, 1051)
+'draw_bb_boxes', (11264, 1351)
+'dense_boxes', (12800, 602)
