@@ -1,5 +1,7 @@
-#  Model PNG
-model.png
+# Generated Files
+*.gif
+*.png
+*.mp4
 
 # Keras Tuner
 untitled_project/
