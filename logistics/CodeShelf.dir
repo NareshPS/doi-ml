@@ -8,3 +8,5 @@
 'show_dataset_samples', (9728, 1051)
 'draw_bb_boxes', (11264, 1351)
 'dense_boxes', (12800, 602)
+'save_frames_as_gif', (13824, 407)
+'display_gifs', (14336, 692)
