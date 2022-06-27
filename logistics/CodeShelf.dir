@@ -10,3 +10,5 @@
 'dense_boxes', (12800, 602)
 'save_frames_as_gif', (13824, 407)
 'display_gifs', (14336, 692)
+'display_gifs_ipython', (15360, 1019)
+'openai_virtual_display', (16384, 183)
