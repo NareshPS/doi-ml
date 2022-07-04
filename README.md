@@ -5,3 +5,6 @@ This repo contains my ML experiments. They are organized as follows:
 * common: Techniques like convolution and attention which are used across dataset categories.
 * logistic: Related to setting up ML experiments on various platforms.
 * evolution: Evolution programs.
+
+## Notable Projects
+* Training the lunar lander in the Open AI Gym. The project is located at ''rl/Lunar Lander.ipynb''.
