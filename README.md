@@ -7,4 +7,4 @@ This repo contains my ML experiments. They are organized as follows:
 * evolution: Evolution programs.
 
 ## Notable Projects
-* Training the lunar lander in the Open AI Gym using Reinforcement Learning (RL). The project is located at ''rl/Lunar Lander.ipynb''.
+* Training the lunar lander in the Open AI Gym using Reinforcement Learning (RL). The project is located at [Lunar Lander.ipynb](./rl/Lunar Lander.ipynb).
