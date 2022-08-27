@@ -14,3 +14,4 @@
 'openai_virtual_display', (16384, 183)
 'display_images_in_grid', (16896, 510)
 'plot_loss', (17408, 216)
+'color_distortion', (17920, 2704)
