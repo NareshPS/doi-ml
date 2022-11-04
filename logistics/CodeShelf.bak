@@ -15,3 +15,4 @@
 'display_images_in_grid', (16896, 510)
 'plot_loss', (17408, 216)
 'color_distortion', (17920, 2704)
+'display_image_dataset', (20992, 598)
