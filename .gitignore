@@ -17,3 +17,6 @@
 
 # WANDB Files
 wandb
+
+# Python Files
+__pycache__
