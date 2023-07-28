@@ -15,6 +15,16 @@ def get_device():
     
     return device
 
+def set_seeds(seed: int = 3):
+    # 1. Seed for general torch operations
+    torch.manual_seed(3)
+
+    # 2. Seed for GPU operations
+    torch.mps.manual_seed(3)
+
+    # 3. Seed for Apple M1 
+    torch.cuda.manual_seed(3)
+
 def accuracy_fn(y_true, y_pred):
     return (y_pred == y_true).sum().item()/len(y_pred)
 

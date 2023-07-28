@@ -1,3 +1,4 @@
+# %%writefile {'toolbox/engine.py'}
 
 """
 Contains training functions.
@@ -83,6 +84,8 @@ def train(
     device: str = 'cpu',
     epochs: int = 5
 ):
+    # 0. Move the model to right device
+    model = model.to(device)
     
     # 1. Create a container for the results
     results = {
