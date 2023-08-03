@@ -128,6 +128,13 @@ def parse_args():
         required=True,
         help="The number of epochs to train the model",
     )
+    parser.add_argument(
+        "--subset_size",
+        type=int,
+        required=False,
+        default=None,
+        help="The number of samples to use to train and validate.",
+    )
     return parser.parse_args()
 
 
@@ -226,6 +233,7 @@ class PizzaSteakSushiClassifier(LightningModule):
 
         # 2.3. Other Settings
         self.data_workers = os.cpu_count()
+        self.subset_size = args.subset_size
 
         # 3. Add assert to ensure that image is divisible into patches.
         assert (
@@ -365,8 +373,16 @@ class PizzaSteakSushiClassifier(LightningModule):
 
     # 32. Create Train DataLoader
     def train_dataloader(self):
+        if self.subset_size is None:
+            dataset = self.train_data
+        else:
+            print(f"[WARN] Using Subset Size: {self.subset_size}")
+            dataset = torch.utils.data.Subset(
+                self.train_data, list(range(self.subset_size))
+            )
+
         return DataLoader(
-            dataset=torch.utils.data.Subset(self.train_data, list(range(10))),
+            dataset=dataset,
             batch_size=self.batch_size,
             num_workers=self.data_workers,
             shuffle=True,
@@ -375,8 +391,15 @@ class PizzaSteakSushiClassifier(LightningModule):
 
     # 33. Create Validation DataLoader
     def val_dataloader(self):
+        if self.subset_size is None:
+            dataset = self.val_data
+        else:
+            print(f"[WARN] Using Subset Size: {self.subset_size}")
+            dataset = torch.utils.data.Subset(
+                self.val_data, list(range(self.subset_size))
+            )
         return DataLoader(
-            dataset=torch.utils.data.Subset(self.val_data, list(range(10))),
+            dataset=dataset,
             batch_size=self.batch_size,
             num_workers=self.data_workers,
             shuffle=False,
