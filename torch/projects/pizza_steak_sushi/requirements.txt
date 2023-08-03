@@ -1,0 +1,4 @@
+GitPython
+torch
+torcheval
+torchmetrics
