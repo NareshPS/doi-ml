@@ -400,7 +400,7 @@ if __name__ == "__main__":
     trainer = Trainer(
         logger=logger,
         max_epochs=args.epochs,
-        enable_progress_bar=False,
+        enable_progress_bar=True,
         deterministic=True,
         default_root_dir=args.log_path,
     )
