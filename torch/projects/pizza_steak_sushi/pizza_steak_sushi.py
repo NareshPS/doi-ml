@@ -45,7 +45,6 @@ def prepare_toolbox():
 
 ##############################################################################
 ############################## Download Dataset ##############################
-from toolbox import data_download
 
 DATASET_PROPS = {
     "name": "pizza_steak_sushi",
@@ -54,6 +53,8 @@ DATASET_PROPS = {
 
 
 def download_data():
+    from toolbox import data_download
+
     """Downloads pizza_sushi_steak dataset from GitHub
 
     Returns:
@@ -151,7 +152,6 @@ from torch.nn import functional as F
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 from pytorch_lightning import LightningModule
-from toolbox.models.vit import PatchEmbedding, TransformerEncoderBlock, ViT
 
 # from torchmetrics.functional.classification.accuracy import multiclass_accuracy
 from torcheval.metrics.functional import multiclass_accuracy
@@ -159,6 +159,8 @@ from torcheval.metrics.functional import multiclass_accuracy
 
 # 1. Create PizzaSteakSushiClassifier as LightningModule.
 class PizzaSteakSushiClassifier(LightningModule):
+    from toolbox.models.vit import PatchEmbedding, TransformerEncoderBlock, ViT
+
     """An implementation of Vision Transformer"""
 
     # 2. Initialize model hyperparameters.
