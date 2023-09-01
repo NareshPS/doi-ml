@@ -159,7 +159,6 @@ from torcheval.metrics.functional import multiclass_accuracy
 
 # 1. Create PizzaSteakSushiClassifier as LightningModule.
 class PizzaSteakSushiClassifier(LightningModule):
-    from toolbox.models.vit import PatchEmbedding, TransformerEncoderBlock, ViT
 
     """An implementation of Vision Transformer"""
 
@@ -172,6 +171,8 @@ class PizzaSteakSushiClassifier(LightningModule):
         attn_dropout: float = 0.0,
         mlp_dropout: float = 0.1,
     ):
+        from toolbox.models.vit import PatchEmbedding, TransformerEncoderBlock, ViT
+
         super().__init__()
 
         # 2.1. Tunable Hyperparameters
