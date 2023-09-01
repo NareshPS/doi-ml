@@ -13,7 +13,7 @@ TOOLBOX_PROPS = {
 }
 
 
-def prepare_dependencies():
+def prepare_toolbox():
     toolbox_path = Path(TOOLBOX_PROPS["name"])
 
     # 1. Skip toolbox download if it already exists
@@ -85,7 +85,7 @@ def download_data():
 import argparse
 
 
-def parse_args():
+def create_args_parser():
     parser = argparse.ArgumentParser(description="Pizza Steak Sushi Classifier")
     parser.add_argument(
         "--log_path",
@@ -135,45 +135,8 @@ def parse_args():
         default=None,
         help="The number of samples to use to train and validate.",
     )
-    return parser.parse_args()
-
-
-##############################################################################
-
-##############################################################################
-############################# Create Dataloaders #############################
-# from torchvision import transforms
-
-
-# def create_dataloaders(train_path: Path, test_path: Path, batch_size: int):
-#     """Creates dataloaders for train and test sets.
-
-#     Args:
-#         train_path (Path): Path to train set.
-#         test_path (Path): Path to test set.
-#         batch_size (int): The number of elements in a batch.
-
-#     Returns:
-#         train_dataloader: Train Dataloader
-#         test_dataloader: Test Dataloader
-#         class_names: Text labels for dataset classes.
-#     """
-#     # 1. Initialize a transform to process dataset elements
-#     transform = transforms.Compose(
-#         [transforms.Resize((IMG_SIZE, IMG_SIZE)), transforms.ToTensor()]
-#     )
-
-#     print(f"Image Transform: {transform}")
-
-#     # 2. Create train and test dataloaders with the transform
-#     train_dataloader, test_dataloader, class_names = data_setup.create_dataloaders(
-#         train_path=train_path,
-#         test_path=test_path,
-#         transform=transform,
-#         batch_size=batch_size,
-#     )
-
-#     return train_dataloader, test_dataloader, class_names
+    # return parser.parse_args()
+    return parser
 
 
 ##############################################################################
@@ -187,7 +150,7 @@ from torch import nn
 from torch.nn import functional as F
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
-from pytorch_lightning import LightningModule, Trainer
+from pytorch_lightning import LightningModule
 from toolbox.models.vit import PatchEmbedding, TransformerEncoderBlock, ViT
 
 # from torchmetrics.functional.classification.accuracy import multiclass_accuracy
@@ -203,17 +166,9 @@ class PizzaSteakSushiClassifier(LightningModule):
         self,
         args,
         img_size: int = 224,
-        # patch_size: int = 16,
-        # in_channels: int = 3,
-        # num_classes: int = 3,
-        # embedding_dim: int = 768,
-        # mlp_dim: int = 3072,
-        # num_heads: int = 12,
         embedding_dropout: float = 0.1,
         attn_dropout: float = 0.0,
         mlp_dropout: float = 0.1,
-        # num_encoders: int = 12,
-        # learning_rate: float = 0.001,
     ):
         super().__init__()
 
@@ -311,67 +266,71 @@ class PizzaSteakSushiClassifier(LightningModule):
 
     # 21. Create training step
     def training_step(self, batch, batch_idx):
-        X, y = batch
+        return self.compute_loss_and_accuracy(batch, "train_loss", "train_acc")
 
-        # 22. Forward Pass
-        logits = self(X)
-
-        return F.cross_entropy(logits, y)
-
-    # 23. Create validation step
+    # 22. Create validation step
     def validation_step(self, batch, batch_idx):
+        return self.compute_loss_and_accuracy(batch, "val_loss", "val_acc")
+
+    def compute_loss_and_accuracy(self, batch, loss_metric_name, acc_metric_name):
+        # 1. Separate samples and labels
         X, y = batch
 
-        # 24. Forward Pass
+        # 2. Apply the model function to the inputs
         logits = self(X)
 
-        # 25. Compute CrossEntropy Loss
+        # 3. Compute loss between logits and true labels
         loss = F.cross_entropy(logits, y)
 
-        # 26. Class Predictions
-        # preds = logits.softmax(dim=1).argmax(dim=1)
-
-        # 27. Compute Accuracy
-        # acc = multiclass_accuracy(preds, y)
+        # 4. Conpute model prediction accuracy
         acc = multiclass_accuracy(logits, y)
 
-        # 28. Publish Validation Accuracy Metric
-        self.log("val_acc", acc, prog_bar=True)
+        # 5. Log loss and accuracy metrics
+        self.log(
+            loss_metric_name,
+            loss,
+            on_epoch=True,
+        )
+        self.log(
+            acc_metric_name,
+            acc,
+            on_epoch=True,
+        )
 
         return loss
 
-    # 29. Configure Optimizer
+    # 23. Configure Optimizer
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
 
-    # 30. Download Dataset
+    # 24. Download Dataset
     def prepare_data(self):
-        # 31.1. Get download location
+        # 24.1. Get download location
         train_path, val_path = download_data()
 
-        # 31.2. Save dataset locations
+        # 24.2. Save dataset locations
         self.train_path = train_path
         self.val_path = val_path
 
-    # 31.3. Create a function to setup datasets
+    # 25. Create a function to setup datasets
     def setup(self, stage=None):
-        # 31.4. Create a transform to apply over train and validation set.
+        # 25.1. Create a transform to apply over train and validation set.
         transform = transforms.Compose(
             [transforms.Resize((self.img_size, self.img_size)), transforms.ToTensor()]
         )
 
-        # 31.5. Create train dataset
+        # 25.2. Create train dataset
         self.train_data = datasets.ImageFolder(
             root=self.train_path, transform=transform
         )
 
-        # 31.6. Create test dataset
+        # 25.3. Create test dataset
         self.val_data = datasets.ImageFolder(root=self.val_path, transform=transform)
 
-        # 31.7. Get class names
+        # 25.4. Get class names
         self.class_names = self.train_data.classes
 
-    # 32. Create Train DataLoader
+    # 26. Create Train DataLoader
     def train_dataloader(self):
         if self.subset_size is None:
             dataset = self.train_data
@@ -389,7 +348,7 @@ class PizzaSteakSushiClassifier(LightningModule):
             pin_memory=True,
         )
 
-    # 33. Create Validation DataLoader
+    # 27. Create Validation DataLoader
     def val_dataloader(self):
         if self.subset_size is None:
             dataset = self.val_data
@@ -408,36 +367,40 @@ class PizzaSteakSushiClassifier(LightningModule):
 
 
 ##############################################################################
+
+##############################################################################
+#################################### Main ####################################
+
 import time
 
 from pytorch_lightning import loggers as pl_loggers
-from IPython.utils import io
-from toolbox import utils
+from pytorch_lightning import Trainer, Callback
 
 IMG_SIZE = 224
 
 if __name__ == "__main__":
     # 1. Prepare the environment
-    prepare_dependencies()
+    prepare_toolbox()
 
     # 2. Download Dataset
     train_path, test_path = download_data()
 
     # 3. Parse commandline arguments
-    args = parse_args()
+    parser = create_args_parser()
+    args = parser.parse_args()
 
-    # 4. Define Trainer
+    # 4. Initialize Logger
+    print(f"[INFO] Logging to path: {args.log_path}")
+    logger = pl_loggers.TensorBoardLogger(args.log_path)
+
+    # 5. Define Trainer
     trainer = Trainer(
-        logger=False,
+        logger=logger,
         max_epochs=args.epochs,
         enable_progress_bar=False,
         deterministic=True,
         default_root_dir=args.log_path,
     )
-
-    # 5. Initialize Logger
-    print(f"[INFO] Logging to path: {args.log_path}")
-    logger = pl_loggers.TensorBoardLogger(args.log_path)
 
     # 6. Create Model
     model = PizzaSteakSushiClassifier(
@@ -448,30 +411,32 @@ if __name__ == "__main__":
         mlp_dropout=0.1,
     )
 
-    # 6. Train
+    # 7. Train
     start = time.time()
     trainer.fit(model=model)
     end = time.time()
 
-    # 6.1. Log Training Time
+    # 8.1. Log Training Time
     train_time = end - start
     logger.log_metrics({"train_time": end - start})
 
-    # 7. Compute Validation Accuracy
-    with io.capture_output() as captured:
-        val_accuracy = trainer.validate()[0]["val_acc"]
+    # 8.2. Compute Validation Accuracy
+    # with io.capture_output() as captured:
+    val_accuracy = trainer.validate()[0]["val_acc"]
 
-    # 7.1. Log Validation Accuracy
+    # 8.3. Log Validation Accuracy
     logger.log_metrics({"val_acc": val_accuracy})
 
-    # 8. Log the number of model parameters
+    # 8.4. Log the number of model parameters
     num_params = sum(p.numel() for p in trainer.model.parameters() if p.requires_grad)
     logger.log_metrics({"num_params": num_params})
 
     # 9. Save the logs
     logger.save()
+    logger.finalize("success")
 
     # 10. Print Run Summary
     print(
         f"train time: {train_time}, val acc: {val_accuracy}, num_params: {num_params}"
     )
+##############################################################################

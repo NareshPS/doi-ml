@@ -2,3 +2,6 @@ GitPython
 torch
 torcheval
 torchmetrics
+torchinfo
+matplotlib
+mlxtend
