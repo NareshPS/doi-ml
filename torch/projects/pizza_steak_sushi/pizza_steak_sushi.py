@@ -293,11 +293,13 @@ class PizzaSteakSushiClassifier(LightningModule):
             loss_metric_name,
             loss,
             on_epoch=True,
+            prog_bar=True,
         )
         self.log(
             acc_metric_name,
             acc,
             on_epoch=True,
+            prog_bar=True,
         )
 
         return loss
