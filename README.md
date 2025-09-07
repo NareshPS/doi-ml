@@ -16,4 +16,4 @@ This repo contains my ML experiments. They are organized as follows:
 * Neural Architecture Search (NAS) using a simplified version of NASNet [Simplified NASNet](projects/notebooks/NASNet.ipynb).
 * Neural Architecture Search using Genetic Algorithms. A simplified implementation of AmoebaNet [Simplified AmoebaNet](projects/notebooks/AmoebaNet.ipynb)
 * A solution to the [CMI - Detect Behavior with Sensor Data
-](https://www.kaggle.com/competitions/cmi-detect-behavior-with-sensor-data/overview) Kaggle competition.
+](https://www.kaggle.com/competitions/cmi-detect-behavior-with-sensor-data/overview) Kaggle competition at [CMI Behavior Detection](torch/projects/cmi_behavior_detection/solution/Ensemble.ipynb).
